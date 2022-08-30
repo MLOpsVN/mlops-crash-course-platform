@@ -1,4 +1,7 @@
-### How to deploy MLOps platform
+# MLOps Platform
+
+## Quick start
+
 ```bash
 bash run.sh
 ```
