@@ -26,15 +26,42 @@ usage() {
     echo " down                 stop and remove containers, networks"
 }
 
+get_docker_compose_file() {
+    service=$1
+    docker_compose_file="$service/$service-docker-compose.yml"
+    echo "$docker_compose_file"
+}
+
+init_docker_swarm()
+{
+    if [ "$(docker info | grep Swarm | sed 's/ Swarm: //g')" == "inactive" ]; then
+        echo "init_docker_swarm"
+        docker swarm init --advertise-addr 127.0.0.1 --listen-addr 127.0.0.1
+    fi
+}
+
 up() {
     service=$1
-    docker-compose -f $service/$service-docker-compose.yml up -d
+    docker_compose_file=$(get_docker_compose_file $service)
+
+    # Use docker-compose
+    docker-compose -f "$docker_compose_file" up -d
+
+    # Use docker swarm
+    # init_docker_swarm
+    # docker stack deploy --resolve-image always --prune --with-registry-auth --compose-file "$docker_compose_file" "$service"
 }
 
 down() {
     service=$1
+    docker_compose_file=$(get_docker_compose_file $service)
+
+    # Use docker-compose
     #! Using --volumes will remove volumes
-    docker-compose -f $service/$service-docker-compose.yml down
+    docker-compose -f "$docker_compose_file" down
+
+    # Use docker swarm
+    # docker stack rm "$service"
 }
 
 # AIRFLOW
