@@ -9,18 +9,18 @@ ELK="elk"
 FEAST="feast"
 JENKINS="jenkins"
 MLFLOW="mlflow"
-PROMETHEUS_GRAFANA="prometheus-grafana"
+PROM_GRAF="prom-graf"
 
 usage() {
     echo "run.sh <service> <command>"
     echo "Available services:"
     echo " all                  all services"
-    echo " airflow              airflow service"
-    echo " elk                  elk service"
-    echo " feast                feast service"
-    echo " jenkins              jenkins service"
-    echo " mlflow               mlflow service"
-    echo " prometheus-grafana   prometheus and grafana service"
+    echo " $AIRFLOW             airflow service"
+    echo " $ELK                 elk service"
+    echo " $FEAST               feast service"
+    echo " $JENKINS             jenkins service"
+    echo " $MLFLOW              mlflow service"
+    echo " $PROM_GRAF           prometheus and grafana service"
     echo "Available commands:"
     echo " up                   deploy service"
     echo " down                 stop and remove containers, networks"
@@ -113,13 +113,13 @@ down_mlflow() {
     down "$MLFLOW"
 }
 
-# PROMETHEUS_GRAFANA
-up_prometheus_grafana() {
-    up "$PROMETHEUS_GRAFANA"
+# PROM_GRAF
+up_prom_graf() {
+    up "$PROM_GRAF"
 }
 
-down_prometheus_grafana() {
-    down "$PROMETHEUS_GRAFANA"
+down_prom_graf() {
+    down "$PROM_GRAF"
 }
 
 # ALL
@@ -129,7 +129,7 @@ up_all() {
     up_feast
     up_jenkins
     up_mlflow
-    up_prometheus_grafana
+    up_prom_graf
 }
 
 down_all() {
@@ -138,7 +138,7 @@ down_all() {
     down_feast
     down_jenkins
     down_mlflow
-    down_prometheus_grafana
+    down_prom_graf
 }
 
 if [[ -z "$cmd" ]]; then
@@ -176,8 +176,8 @@ up)
         "$MLFLOW")
             up_mlflow "$@"
             ;;
-        "$PROMETHEUS_GRAFANA")
-            up_prometheus_grafana "$@"
+        "$PROM_GRAF")
+            up_prom_graf "$@"
             ;;
         *)
             echo "Unknown service"
@@ -207,8 +207,8 @@ down)
         "$MLFLOW")
             down_mlflow "$@"
             ;;
-        "$PROMETHEUS_GRAFANA")
-            down_prometheus_grafana "$@"
+        "$PROM_GRAF")
+            down_prom_graf "$@"
             ;;
         *)
             echo "Unknown service"
