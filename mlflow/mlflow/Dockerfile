@@ -8,7 +8,6 @@ RUN pip install --no-cache-dir mlflow==${MLFLOW_VERSION}
 EXPOSE 5000
 
 # Ref: https://github.com/mlflow/mlflow/issues/6274#issuecomment-1196106372
-# --default-artifact-root ${ARTIFACT_ROOT} \
 CMD mlflow server \
     --backend-store-uri ${MLFLOW_TRACKING_URI} \
     --serve-artifacts \
