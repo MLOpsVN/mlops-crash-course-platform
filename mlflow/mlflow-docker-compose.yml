@@ -10,7 +10,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      BACKEND_URI: sqlite:////mlflow/mlflow.db
-      ARTIFACT_ROOT: /mlflow/artifacts
+      MLFLOW_TRACKING_URI: sqlite:////mlflow/mlflow.db
+      ARTIFACTS_RELATIVE_PATH: ./artifacts
     volumes:
       - ./run_env/data:/mlflow
