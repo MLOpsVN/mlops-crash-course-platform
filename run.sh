@@ -45,7 +45,7 @@ up() {
     docker_compose_file=$(get_docker_compose_file $service)
 
     # Use docker-compose
-    docker-compose -f "$docker_compose_file" up -d
+    docker-compose -f "$docker_compose_file" up --build -d
 
     # Use docker swarm
     # init_docker_swarm
