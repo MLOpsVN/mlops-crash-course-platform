@@ -12,7 +12,7 @@ MLFLOW="mlflow"
 PROM_GRAF="prom-graf"
 
 usage() {
-    echo "run.sh <service> <command>"
+    echo "run.sh <service> <command> [options]"
     echo "Available services:"
     echo " all                  all services"
     echo " $AIRFLOW             airflow service"
@@ -24,6 +24,9 @@ usage() {
     echo "Available commands:"
     echo " up                   deploy service"
     echo " down                 stop and remove containers, networks"
+    echo "Available commands:"
+    echo " --build              rebuild when up"
+    echo " --volumes            remove volumes when down"
 }
 
 get_docker_compose_file() {
@@ -42,10 +45,11 @@ init_docker_swarm()
 
 up() {
     service=$1
+    shift
     docker_compose_file=$(get_docker_compose_file $service)
 
     # Use docker-compose
-    docker-compose -f "$docker_compose_file" up --build -d
+    docker-compose -f "$docker_compose_file" up -d "$@"
 
     # Use docker swarm
     # init_docker_swarm
@@ -54,11 +58,11 @@ up() {
 
 down() {
     service=$1
+    shift
     docker_compose_file=$(get_docker_compose_file $service)
 
     # Use docker-compose
-    #! Using --volumes will remove volumes
-    docker-compose -f "$docker_compose_file" down
+    docker-compose -f "$docker_compose_file" down "$@"
 
     # Use docker swarm
     # docker stack rm "$service"
@@ -70,75 +74,75 @@ up_airflow() {
     if [[ ! -f "$env_file" ]]; then
         echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > "$env_file"
     fi
-    up "$AIRFLOW"
+    up "$AIRFLOW" "$@"
 }
 
 down_airflow() {
-    down "$AIRFLOW"
+    down "$AIRFLOW" "$@"
 }
 
 # ELK
 up_elk() {
-    up "$ELK"
+    up "$ELK" "$@"
 }
 
 down_elk() {
-    down "$ELK"
+    down "$ELK" "$@"
 }
 
 # FEAST
 up_feast() {
-    up "$FEAST"
+    up "$FEAST" "$@"
 }
 
 down_feast() {
-    down "$FEAST"
+    down "$FEAST" "$@"
 }
 
 # JENKINS
 up_jenkins() {
-    up "$JENKINS"
+    up "$JENKINS" "$@"
 }
 
 down_jenkins() {
-    down "$JENKINS"
+    down "$JENKINS" "$@"
 }
 
 # MLFLOW
 up_mlflow() {
-    up "$MLFLOW"
+    up "$MLFLOW" "$@"
 }
 
 down_mlflow() {
-    down "$MLFLOW"
+    down "$MLFLOW" "$@"
 }
 
 # PROM_GRAF
 up_prom_graf() {
-    up "$PROM_GRAF"
+    up "$PROM_GRAF" "$@"
 }
 
 down_prom_graf() {
-    down "$PROM_GRAF"
+    down "$PROM_GRAF" "$@"
 }
 
 # ALL
 up_all() {
-    up_airflow
-    up_elk
-    up_feast
-    up_jenkins
-    up_mlflow
-    up_prom_graf
+    up_airflow "$@"
+    up_elk "$@"
+    up_feast "$@"
+    up_jenkins "$@"
+    up_mlflow "$@"
+    up_prom_graf "$@"
 }
 
 down_all() {
-    down_airflow
-    down_elk
-    down_feast
-    down_jenkins
-    down_mlflow
-    down_prom_graf
+    down_airflow "$@"
+    down_elk "$@"
+    down_feast "$@"
+    down_jenkins "$@"
+    down_mlflow "$@"
+    down_prom_graf "$@"
 }
 
 if [[ -z "$cmd" ]]; then
