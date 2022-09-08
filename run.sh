@@ -24,7 +24,7 @@ usage() {
     echo "Available commands:"
     echo " up                   deploy service"
     echo " down                 stop and remove containers, networks"
-    echo "Available commands:"
+    echo "Available options:"
     echo " --build              rebuild when up"
     echo " --volumes            remove volumes when down"
 }
