@@ -12,6 +12,3 @@ services:
       timeout: 30s
       retries: 50
     restart: always
-
-volumes:
-  feast-postgres-db-volume:
