@@ -61,6 +61,7 @@ x-airflow-common:
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
   volumes:
+    -  /var/run/docker.sock:/var/run/docker.sock
     - ./run_env/dags:/opt/airflow/dags
     - ./run_env/logs:/opt/airflow/logs
     - ./run_env/plugins:/opt/airflow/plugins
