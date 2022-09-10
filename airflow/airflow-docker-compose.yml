@@ -62,7 +62,6 @@ x-airflow-common:
     - ./run_env/dags:/opt/airflow/dags
     - ./run_env/logs:/opt/airflow/logs
     - ./run_env/plugins:/opt/airflow/plugins
-    - ./run_env/artifacts:/opt/airflow/artifacts
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
