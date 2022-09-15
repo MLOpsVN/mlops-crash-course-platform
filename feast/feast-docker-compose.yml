@@ -12,6 +12,9 @@ services:
       timeout: 30s
       retries: 50
     restart: always
+<<<<<<< HEAD
 
 volumes:
   feast-postgres-db-volume:
+=======
+>>>>>>> 3cc85844c3a98f5db9828c0e19dcfe699f023481
