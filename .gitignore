@@ -1,4 +1,4 @@
 airflow/.env
-run_env
+*/run_env
 .vscode
 bin
