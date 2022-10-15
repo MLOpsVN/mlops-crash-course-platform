@@ -1,4 +1,5 @@
 airflow/.env
 airflow/run_env
+jenkins/run_env
 .vscode
 bin
