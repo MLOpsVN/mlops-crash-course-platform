@@ -1,10 +1,6 @@
 # Source: https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
 version: '3.8'
 
-networks:
-  monitoring:
-    driver: bridge
-
 volumes:
   prometheus_data:
   grafana_data:
@@ -25,13 +21,14 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     ports:
       - 9100:9100
+    network_mode: host
 
   prometheus:
     image: prom/prometheus:v2.38.0
     container_name: prometheus
     restart: unless-stopped
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -41,14 +38,16 @@ services:
       - '--web.enable-lifecycle'
     ports:
       - 9090:9090
+    network_mode: host
 
   grafana:
     image: grafana/grafana:9.0.5
     container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./run_env/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - ./run_env/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/config/datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      - ./grafana/config/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./run_env/grafana/dashboards:/opt/grafana/dashboards
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -56,3 +55,4 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
+    network_mode: host

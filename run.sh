@@ -10,6 +10,7 @@ FEAST="feast"
 JENKINS="jenkins"
 MLFLOW="mlflow"
 PROM_GRAF="prom-graf"
+RESTART_SLEEP_SEC=2
 
 usage() {
     echo "run.sh <service> <command> [options]"
@@ -24,6 +25,7 @@ usage() {
     echo "Available commands:"
     echo " up                   deploy service"
     echo " down                 stop and remove containers, networks"
+    echo " restart              down then up"
     echo "Available options:"
     echo " --build              rebuild when up"
     echo " --volumes            remove volumes when down"
@@ -83,11 +85,11 @@ down_airflow() {
 
 # ELK
 up_elk() {
-    up "$ELK" "$@"
+    docker-compose -f "$ELK/$ELK-docker-compose.yml" -f "$ELK/extensions/filebeat/filebeat-compose.yml" up -d "$@"
 }
 
 down_elk() {
-    down "$ELK" "$@"
+    docker-compose -f "$ELK/$ELK-docker-compose.yml" -f "$ELK/extensions/filebeat/filebeat-compose.yml" down "$@"
 }
 
 # FEAST
@@ -213,6 +215,51 @@ down)
             ;;
         "$PROM_GRAF")
             down_prom_graf "$@"
+            ;;
+        *)
+            echo "Unknown service"
+            usage
+            exit 1
+            ;;
+    esac
+    ;;
+
+restart)
+    case $service in
+        all)
+            down_all "$@"
+            sleep $RESTART_SLEEP_SEC
+            up_all "$@"
+            ;;
+        "$AIRFLOW")
+            down_airflow "$@"
+            sleep $RESTART_SLEEP_SEC
+            up_airflow "$@"
+            ;;
+        "$ELK")
+            down_elk "$@"
+            sleep $RESTART_SLEEP_SEC
+            up_elk "$@"
+            ;;
+        "$FEAST")
+            down_feast "$@"
+            sleep $RESTART_SLEEP_SEC
+            up_feast "$@"
+            ;;
+        "$JENKINS")
+            down_jenkins "$@"
+            sleep $RESTART_SLEEP_SEC
+            up_jenkins "$@"
+            ;;
+        "$MLFLOW")
+            down_mlflow "$@"
+            sleep $RESTART_SLEEP_SEC
+            up_mlflow "$@"
+            ;;
+        "$PROM_GRAF")
+            down_prom_graf "$@"
+            sleep $RESTART_SLEEP_SEC
+            up_prom_graf "$@"
             ;;
         *)
             echo "Unknown service"
