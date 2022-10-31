@@ -1,6 +1,10 @@
 # Source: https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
 version: '3.8'
 
+networks:
+  monitoring:
+    driver: bridge
+
 volumes:
   prometheus_data:
   grafana_data:
@@ -19,9 +23,8 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    # ports:
-    #   - 9100:9100
-    network_mode: host
+    ports:
+      - 9100:9100
 
   prometheus:
     image: prom/prometheus:v2.38.0
@@ -36,9 +39,8 @@ services:
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
-    # ports:
-    #   - 9090:9090
-    network_mode: host
+    ports:
+      - 9090:9090
 
   grafana:
     image: grafana/grafana:9.0.5
@@ -53,6 +55,5 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
-    # ports:
-    #   - 3000:3000
-    network_mode: host
+    ports:
+      - 3000:3000

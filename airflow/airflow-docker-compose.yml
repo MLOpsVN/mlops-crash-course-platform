@@ -56,9 +56,9 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+    AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: "5"
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
   volumes:
-    -  /var/run/docker.sock:/var/run/docker.sock
     - ./run_env/dags:/opt/airflow/dags
     - ./run_env/logs:/opt/airflow/logs
     - ./run_env/plugins:/opt/airflow/plugins
@@ -69,6 +69,16 @@ x-airflow-common:
       condition: service_healthy
 
 services:
+  # Fix permission denied when using DockerOperator in Airflow
+  # Ref: https://onedevblog.com/how-to-fix-a-permission-denied-when-using-dockeroperator-in-airflow/
+  docker-proxy:
+    image: bobrik/socat
+    command: "TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock"
+    ports:
+      - "2376:2375"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   postgres:
     image: postgres:13
     environment:
