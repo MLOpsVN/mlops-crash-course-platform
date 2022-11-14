@@ -1,4 +1,4 @@
-FROM python:3-slim
+FROM python:3.9-slim
 
 WORKDIR /mlflow/
 
@@ -9,8 +9,7 @@ EXPOSE 5000
 
 # Ref: https://github.com/mlflow/mlflow/issues/6274#issuecomment-1196106372
 CMD mlflow server \
-    --backend-store-uri ${MLFLOW_TRACKING_URI} \
+    --backend-store-uri ${BACKEND_STORE_URI} \
     --serve-artifacts \
-    --artifacts-destination ${ARTIFACTS_RELATIVE_PATH} \
     --host 0.0.0.0 \
     --port 5000
